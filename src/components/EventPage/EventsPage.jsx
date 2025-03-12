@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/Navbar';
 import { Link } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
 function EventsPage() {
-  // Load events from local storage or use default initial events
   const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
 
   const initialEvents = storedEvents.length > 0 ? storedEvents : [
@@ -14,7 +14,7 @@ function EventsPage() {
 
   const [events, setEvents] = useState(initialEvents);
   const [currentFilter, setCurrentFilter] = useState('All');
-  const [nextId, setNextId] = useState(storedEvents.length > 0 ? storedEvents.length + 1 : 4);
+  const [nextId, setNextId] = useState(storedEvents.length > 0 ? storedEvents.length + 1 : 10);
   const [showAddForm, setShowAddForm] = useState(false);
 
   const [newTitle, setNewTitle] = useState('');
@@ -23,7 +23,6 @@ function EventsPage() {
   const [newImageUrl, setNewImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState('');
 
-  // Save events to local storage whenever the events array changes
   useEffect(() => {
     localStorage.setItem('events', JSON.stringify(events));
   }, [events]);
@@ -52,7 +51,6 @@ function EventsPage() {
     setEvents(updatedEvents);
     setNextId(nextId + 1);
 
-    // Clear the form fields
     setNewTitle('');
     setNewDate('');
     setNewCategory('Religious');
@@ -71,8 +69,8 @@ function EventsPage() {
 
       {/* Filter Events */}
       <section className="filter">
-        <h1>Our Events</h1>
-        <h3>Upcoming Events</h3>
+        <h1>We Helped Communities Connect & Flourish</h1>
+        <h3>✦ Upcoming Events</h3>
         <h2>Filter Events by Category</h2>
         <div className="category-filters">
           {['All', 'Religious', 'Social', 'Charity'].map(category => (
@@ -132,7 +130,12 @@ function EventsPage() {
               return (
                 <div className="event-card" key={event.id}>
                   <div className="event-image-container">
-                    <img src={event.image} alt={event.title} className="event-image" onError={(e) => (e.target.src = '/public/default-event.jpg')} />
+                    <img 
+                      src={event.image} 
+                      alt={event.title} 
+                      className="event-image" 
+                      onError={(e) => (e.target.src = '/public/default-event.jpg')} 
+                    />
                     <div className="event-date">
                       <span className="month">{month}</span>
                       <span className="day">{day}</span>
@@ -141,7 +144,9 @@ function EventsPage() {
                   <div className="event-details">
                     <span className="event-category">{event.category.toUpperCase()}</span>
                     <h3>{event.title}</h3>
-                    <p><strong>Date:</strong> {eventDate.toDateString()}</p>
+                    <p>
+                      <i className="fa-solid fa-calendar"></i> <strong>Date:</strong> {eventDate.toDateString()}
+                    </p>
                     <Link to="/event-details" className="event-link">Event Details →</Link>
                   </div>
                 </div>

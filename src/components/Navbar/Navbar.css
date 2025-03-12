@@ -75,6 +75,7 @@
   display: none;
   font-size: 28px;
   cursor: pointer;
+  z-index: 20; /* Ensure it's above other elements */
 }
 
 /* Responsive Styles */
@@ -88,24 +89,65 @@
   }
 
   .navbar-links {
-    display: none;
-    flex-direction: column;
     position: absolute;
     top: 70px;
     left: 0;
     width: 100%;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px 0;
     z-index: 10;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    padding: 0;
   }
 
   .navbar-links.open {
-    display: flex;
+    max-height: 300px; /* Adjust based on your content */
+    padding: 10px 0;
   }
 
   .navbar-links li {
-    margin: 10px 0;
+    margin: 0;
+    width: 100%;
     text-align: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .navbar-links li:last-child {
+    border-bottom: none;
+  }
+  
+  .navbar-links a {
+    display: block;
+    padding: 5px 0;
+  }
+  
+  /* Handle the Sign-in button for mobile */
+  .navbar-signin {
+    position: absolute;
+    right: 60px; /* Give some space from the menu icon */
+  }
+  
+  .signin-button {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 0.5rem;
+  }
+  
+  .navbar-logo img {
+    height: 35px;
+  }
+  
+  .signin-button {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
