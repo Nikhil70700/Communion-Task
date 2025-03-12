@@ -1,53 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/Navbar';
 import { Link } from 'react-router-dom';
 
 function EventsPage() {
+  // Load events from local storage or use default initial events
+  const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
 
-  var initialEvents = [
-    {
-      id: 1,
-      title: 'Holi - A Festival of Colours and Unity',
-      date: '2025-03-20',
-      category: 'Religious',
-      image: '/Holi.png'
-    },
-    {
-      id: 2,
-      title: 'Eid-ul-Fitr',
-      date: '2025-04-05',
-      category: 'Social',
-      image: '/eid.webp'
-    },
-    {
-      id: 3,
-      title: 'Christmas Charity Drive',
-      date: '2025-03-15',
-      category: 'Charity',
-      image: '/crist.webp'
-    }
+  const initialEvents = storedEvents.length > 0 ? storedEvents : [
+    { id: 1, title: 'Holi - A Festival of Colours and Unity', date: '2025-03-20', category: 'Religious', image: '/Holi.png' },
+    { id: 2, title: 'Eid-ul-Fitr', date: '2025-04-05', category: 'Social', image: '/eid.webp' },
+    { id: 3, title: 'Christmas Charity Drive', date: '2025-03-15', category: 'Charity', image: '/crist.webp' }
   ];
 
+  const [events, setEvents] = useState(initialEvents);
+  const [currentFilter, setCurrentFilter] = useState('All');
+  const [nextId, setNextId] = useState(storedEvents.length > 0 ? storedEvents.length + 1 : 4);
+  const [showAddForm, setShowAddForm] = useState(false);
 
-  var [events, setEvents] = useState(initialEvents);
-  var [currentFilter, setCurrentFilter] = useState('All');
-  var [nextId, setNextId] = useState(4);
-  var [showAddForm, setShowAddForm] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDate, setNewDate] = useState('');
+  const [newCategory, setNewCategory] = useState('Religious');
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
 
-
-  var [newTitle, setNewTitle] = useState('');
-  var [newDate, setNewDate] = useState('');
-  var [newCategory, setNewCategory] = useState('Religious');
-  var [newImageUrl, setNewImageUrl] = useState('');
-  var [imagePreview, setImagePreview] = useState('');
-
+  // Save events to local storage whenever the events array changes
+  useEffect(() => {
+    localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
 
   function handleImageUrlChange(e) {
-    var url = e.target.value;
-    setNewImageUrl(url);
-    setImagePreview(url);
+    setNewImageUrl(e.target.value);
+    setImagePreview(e.target.value);
   }
-
 
   function handleFilterClick(category) {
     setCurrentFilter(category);
@@ -56,15 +40,15 @@ function EventsPage() {
   function handleAddEvent(e) {
     e.preventDefault();
 
-    var newEvent = {
+    const newEvent = {
       id: nextId,
       title: newTitle,
       date: newDate,
       category: newCategory,
-      image: newImageUrl ? newImageUrl : '/Event.avif'
+      image: newImageUrl || '/Event.avif'
     };
 
-    var updatedEvents = events.concat(newEvent);
+    const updatedEvents = [...events, newEvent];
     setEvents(updatedEvents);
     setNextId(nextId + 1);
 
@@ -74,65 +58,34 @@ function EventsPage() {
     setNewCategory('Religious');
     setNewImageUrl('');
     setImagePreview('');
-
-
     setShowAddForm(false);
   }
 
-  //  Show Event Based On Filter
-  var eventsToShow = events;
-  if (currentFilter !== 'All') {
-    eventsToShow = events.filter(function (event) {
-      return event.category === currentFilter;
-    });
-  }
+  const eventsToShow = currentFilter === 'All' ? events : events.filter(event => event.category === currentFilter);
 
   return (
     <div className="events-page">
-
       <header>
         <Navbar />
       </header>
 
-      {/* Filter Events  */}
+      {/* Filter Events */}
       <section className="filter">
         <h1>Our Events</h1>
         <h3>Upcoming Events</h3>
         <h2>Filter Events by Category</h2>
         <div className="category-filters">
-          <button
-            onClick={function () { handleFilterClick('All'); }}
-            className={currentFilter === 'All' ? 'active' : ''}
-          >
-            All
-          </button>
-          <button
-            onClick={function () { handleFilterClick('Religious'); }}
-            className={currentFilter === 'Religious' ? 'active' : ''}
-          >
-            Religious
-          </button>
-          <button
-            onClick={function () { handleFilterClick('Social'); }}
-            className={currentFilter === 'Social' ? 'active' : ''}
-          >
-            Social
-          </button>
-          <button
-            onClick={function () { handleFilterClick('Charity'); }}
-            className={currentFilter === 'Charity' ? 'active' : ''}
-          >
-            Charity
-          </button>
+          {['All', 'Religious', 'Social', 'Charity'].map(category => (
+            <button key={category} onClick={() => handleFilterClick(category)} className={currentFilter === category ? 'active' : ''}>
+              {category}
+            </button>
+          ))}
         </div>
       </section>
 
       {/* Adding New Event */}
       <section className="add-event-section">
-        <button
-          className="add-event-button"
-          onClick={function () { setShowAddForm(!showAddForm); }}
-        >
+        <button className="add-event-button" onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? 'Cancel' : 'Add New Event'}
         </button>
 
@@ -142,28 +95,15 @@ function EventsPage() {
             <form onSubmit={handleAddEvent}>
               <div className="form-group">
                 <label>Title:</label>
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={function (e) { setNewTitle(e.target.value); }}
-                  required
-                />
+                <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} required />
               </div>
               <div className="form-group">
                 <label>Date:</label>
-                <input
-                  type="date"
-                  value={newDate}
-                  onChange={function (e) { setNewDate(e.target.value); }}
-                  required
-                />
+                <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} required />
               </div>
               <div className="form-group">
                 <label>Category:</label>
-                <select
-                  value={newCategory}
-                  onChange={function (e) { setNewCategory(e.target.value); }}
-                >
+                <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
                   <option value="Religious">Religious</option>
                   <option value="Social">Social</option>
                   <option value="Charity">Charity</option>
@@ -171,23 +111,8 @@ function EventsPage() {
               </div>
               <div className="form-group">
                 <label>Image URL (optional):</label>
-                <input
-                  type="url"
-                  value={newImageUrl}
-                  onChange={handleImageUrlChange}
-                  placeholder="Enter Url"
-                />
-                {imagePreview && (
-                  <div className="image-preview-container">
-                    <p>Image Preview:</p>
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="image-preview"
-                      onError={function () { setImagePreview('/public/default-event.jpg'); }}
-                    />
-                  </div>
-                )}
+                <input type="url" value={newImageUrl} onChange={handleImageUrlChange} placeholder="Enter Url" />
+                {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
               </div>
               <button type="submit" className="submit-button">Add Event</button>
             </form>
@@ -195,23 +120,19 @@ function EventsPage() {
         )}
       </section>
 
+      {/* Event List */}
       <section className="events-list">
         <h2>Upcoming Events</h2>
         {eventsToShow.length > 0 ? (
           <div className="event-cards">
-            {eventsToShow.map(function (event) {
-              var eventDate = new Date(event.date);
-              var month = eventDate.toLocaleString('default', { month: 'short' });
-              var day = eventDate.getDate();
+            {eventsToShow.map((event) => {
+              const eventDate = new Date(event.date);
+              const month = eventDate.toLocaleString('default', { month: 'short' });
+              const day = eventDate.getDate();
               return (
                 <div className="event-card" key={event.id}>
                   <div className="event-image-container">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="event-image"
-                      onError={function (e) { e.target.src = '/public/default-event.jpg'; }}
-                    />
+                    <img src={event.image} alt={event.title} className="event-image" onError={(e) => (e.target.src = '/public/default-event.jpg')} />
                     <div className="event-date">
                       <span className="month">{month}</span>
                       <span className="day">{day}</span>
