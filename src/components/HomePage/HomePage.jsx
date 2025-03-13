@@ -28,6 +28,15 @@ const HomePage = () => {
             <div className="slide">
               <img src="/Slide3.avif" alt="Slide 3" />
             </div>
+            <div className="slide">
+              <img src="/Slide4.avif" alt="Slide 3" />
+            </div>
+            <div className="slide">
+              <img src="/Slide5.avif" alt="Slide 3" />
+            </div>
+            <div className="slide">
+              <img src="/Slide6.avif" alt="Slide 3" />
+            </div>
 
           </div>
         </div>

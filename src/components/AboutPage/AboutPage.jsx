@@ -83,9 +83,9 @@ const AboutPage = () => {
         <section className="contact-info">
           <h3>Contact Us</h3>
           <p>Have questions or suggestions? Reach out to us at:</p>
-          <p>Email: contact@communionhub.org</p>
-          <p>Phone: (123) 456-7890</p>
-          <p>Address: 123 Community St, City, State 12345</p>
+  <p>Email: <a href="mailto:contact@communionhub.org">contact@communionhub.org</a></p>
+  <p>Phone: <a href="tel:+11234567890">(123) 456-7890</a></p>
+  <p>Address: 18, Plot 83, Devarat, Sec 17, Vashi, Navi Mumbai</p>
         </section>
       </div>
     </div>
